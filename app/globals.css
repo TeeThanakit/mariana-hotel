@@ -16,20 +16,28 @@
   }
 }
 
-/* body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-} */
+:root {
+  --color-grey-100: #f5f5f5; /* Define light grey color */
+  --color-grey-800: #333333; /* Define dark grey color */
+  --color-success-500: #00ff00; /* Define success color */
+  --color-error-500: #ff0000; /* Define error color */
+  --size-6: 1.5rem; /* Define font size */
+  --size-8: 2rem; /* Define padding size */
+}
 
 *{
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html,body{
+  line-height: 1.7em;
+}
+
+.container{
+  margin: auto;
+  max-width: 1100px;
 }
 
 @layer utilities {
