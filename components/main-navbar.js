@@ -8,7 +8,7 @@ export default function MainNavigator() {
   const active = "rounded-full p-2.5 bg-patty-blue text-white";
   return (
     <header>
-      <div className="font-bold flex items-center justify-between text-black bg-opacity-80 w-full h-20 px-8">
+      <div className="max-w-5xl mx-auto font-bold flex items-center justify-between text-black bg-opacity-80  h-20 px-8">
         <Link href="/" className="pl-3.5">
           <h1>MARIANA</h1>
         </Link>
