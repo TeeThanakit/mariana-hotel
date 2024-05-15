@@ -40,18 +40,71 @@ app.post('/api/contacts', async (req, res) => {
 });
 
 //Fetch Hotel Data
-const roomTypeSchema = new mongoose.Schema({
-  price: String,
-  types: String,
-  available: String
-}, { collection: 'roomtypes' }); // This tells Mongoose to use the exact collection name
+const roomTypeSchema = new mongoose.Schema({}, { collection: 'roomtypes' });
 
 const RoomType = mongoose.model('RoomType', roomTypeSchema);
 
 app.get('/api/roomtypes', async (req, res) => {
   try {
-    const roomTypes = await RoomType.find(); // This queries all documents in the roomtypes collection
+    const roomTypes = await RoomType.find({}, 'price types capacity image children _id'); // Fetch only roomID and clean_status fields
     res.json(roomTypes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+const roomCleanSchema = new mongoose.Schema({
+  clean: String,
+  room: String
+}, { collection: 'roomtypes' }); // This tells Mongoose to use the exact collection name
+
+const roomClean = mongoose.model('RoomClean', roomCleanSchema);
+
+app.get('/api/roomclean', async (req, res) => {
+  try {
+    // Modify this line to filter for rooms that are marked as available
+    const roomCleans = await roomClean.find({ clean: "NO" });
+    res.json(roomCleans);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update room clean status
+app.put('/api/roomclean/:roomId', async (req, res) => {
+  const roomId = req.params.roomId;
+  const { clean } = req.body;
+  try {
+    const updatedRoom = await roomClean.findByIdAndUpdate(roomId, { clean }, { new: true });
+    if (updatedRoom) {
+      res.status(200).json(updatedRoom);
+    } else {
+      res.status(404).json({ message: "Room not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+const userSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  role: String,
+  staffid: String
+}, { collection: 'username' });
+const User = mongoose.model('User', userSchema);
+
+// Login endpoint
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username, password });
+    if (user) {
+      res.status(200).json({ message: "Login successful", user });
+    } else {
+      res.status(401).json({ message: "Invalid username or password" });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
