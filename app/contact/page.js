@@ -7,7 +7,7 @@ import { MdLocalPhone } from "react-icons/md";
 
 // Fake API
 async function sendContactData(contactDetails) {
-  const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+  const response = await fetch('http://43.229.135.65:5001/api/contacts', {
     method: "POST",
     body: JSON.stringify(contactDetails),
     headers: {
@@ -19,6 +19,7 @@ async function sendContactData(contactDetails) {
     throw new Error(data.message || "Something went wrong!");
   }
 }
+
 
 export default function ContactForm() {
   const enteredName = useRef();

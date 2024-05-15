@@ -41,7 +41,7 @@ export default function MainNavigator() {
               </Link>
             </li>
             <li className="px-3.5 whitespace-nowrap">
-              <Link href="/">Book now!</Link>
+              <Link href="/booknow">Book now!</Link>
             </li>
           </ul>
         </nav>
