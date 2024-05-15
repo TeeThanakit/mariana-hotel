@@ -41,7 +41,12 @@ export default function MainNavigator() {
               </Link>
             </li>
             <li className="px-3.5 whitespace-nowrap">
-              <Link href="/booknow">Book now!</Link>
+              <Link
+                className={`link ${pathname === "/booknow" ? active : ""}`}
+                href="/booknow"
+              >
+                Book now!
+              </Link>
             </li>
           </ul>
         </nav>
