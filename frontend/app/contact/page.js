@@ -105,7 +105,7 @@ export default function ContactForm() {
           <p className="flex flex-col pt-3">
             <label>Email</label>
             <input
-              type="text"
+              type="email"
               required
               ref={enteredEmail}
               className="border border-solid border-gray-300 p-2"
