@@ -14,6 +14,7 @@ module.exports = {
       },
       colors: {
         "patty-blue": "#76B3D3",
+        "brown":"#a4a4a4"
       },
     },
   },
