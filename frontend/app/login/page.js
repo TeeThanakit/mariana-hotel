@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from 'next/dynamic';
 
 const Notification = dynamic(() => import("@/components/ui/notification"));
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const enteredPassword = useRef();
   const [requestStatus, setRequestStatus] = useState(); // 'pending', 'success', 'error'
   const [requestError, setRequestError] = useState();
+  const router = useRouter();
 
   async function authenticateUser(credentials) {
     console.log('Sending credentials:', credentials);  // Add logging to see exactly what is sent
@@ -41,6 +43,22 @@ export default function LoginPage() {
     try {
       const userData = await authenticateUser({ username, password });
       setRequestStatus("success");
+
+      // Redirect based on role
+      switch (userData.role) {
+        case "CEO":
+          router.push('/ceo');
+          break;
+        case "janitor":
+          router.push('/janitor');
+          break;
+        case "staff":
+          router.push('/staff');
+          break;
+        default:
+          router.push('/');
+          break;
+      }
     } catch (error) {
       setRequestError(error.message);
       setRequestStatus("error");
