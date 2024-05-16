@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function BookingPage() {
   const [checkInDate, setCheckInDate] = useState("");
@@ -8,26 +8,42 @@ export default function BookingPage() {
   const [numAdults, setNumAdults] = useState(1);
   const [numChildren, setNumChildren] = useState(0);
   const [availability, setAvailability] = useState(null);
-  const [roomType, setRoomType] = useState("");
 
   const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const roomTypeParam = searchParams.get("roomType");
-    setRoomType(roomTypeParam || ""); // Set room type from query parameter
-  }, [searchParams]);
+  const router = useRouter();
 
   function handleSubmit(event) {
     event.preventDefault();
-    // Perform validation if necessary
-
-    // Call backend API to check availability
-    // Replace this with actual API call
-    const availabilityData = {
-      available: true, // or false
-      // Additional availability details if needed
+    
+    const bookingData = {
+      checkInDate,
+      checkOutDate,
+      numAdults,
+      numChildren
     };
-    setAvailability(availabilityData);
+  
+    fetch('http://localhost:5001/check-availability', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bookingData),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setAvailability(data);
+      if (data.available) {
+        // Save the available rooms to local storage or state management
+        localStorage.setItem('availableRooms', JSON.stringify(data.rooms));
+        // Redirect to the /available page
+        router.push('/available');
+      } else {
+        alert("No rooms available for the selected dates.");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   }
 
   return (
@@ -108,20 +124,6 @@ export default function BookingPage() {
           Check Availability
         </button>
       </form>
-      {availability && (
-        <div className="mt-8">
-          {availability.available ? (
-            <p className="text-green-600">
-              Rooms are available for the selected dates!
-            </p>
-          ) : (
-            <p className="text-red-600">
-              Sorry, no rooms available for the selected dates.
-            </p>
-          )}
-          {/* Display additional availability details if needed */}
-        </div>
-      )}
     </section>
   );
 }
