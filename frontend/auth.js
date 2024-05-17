@@ -1,31 +1,64 @@
 import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
+// import StaffCredential from "./app/(model)/StaffCredential";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    Google({
+      profile(profile) {
+        console.log("Profile of Google ", profile);
+
+        let userRole = "Google User";
+
+        return {
+          ...profile,
+          id: profile.sub,
+          role: userRole,
+        };
+      },
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_Secret,
+    }),
     Credentials({
       credentials: {
         username: {},
         password: {},
       },
       authorize: async (credentials) => {
-        let user = null;
+        try {
+          console.log("Enter 1");
+          const foundUser = await StaffCredential.findOne({
+            username: credentials.username,
+          })
+            .lean()
+            .exec();
 
-        // logic to salt and hash password
-        const pwHash = saltAndHashPassword(credentials.password);
+          if (foundUser) {
+            console.log("User Exists");
+            const match = credentials.password == foundUser.password;
+          }
 
-        // logic to verify if user exists
-        user = await getUserFromDb(credentials.email, pwHash);
-
-        if (!user) {
-          // No user found, so this is their first attempt to login
-          // meaning this is also the place you could do registration
-          throw new Error("User not found.");
+          if (match) {
+            console.log("Password matched");
+            return foundUser;
+          }
+        } catch (error) {
+          console.log(error);
         }
-
-        // return user object with the their profile data
-        return user;
+        return null;
       },
     }),
   ],
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.role = user.role;
+      return token;
+    },
+    async session({ session, token }) {
+      if (session?.user) session.user.role = token.role;
+      return session;
+    },
+  },
 });
