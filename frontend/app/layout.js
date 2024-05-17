@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <MainNavigator/>
+        {/* <MainNavigator/> */}
         <main>{children}</main>
       </body>
     </html>
