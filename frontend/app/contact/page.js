@@ -8,7 +8,7 @@ import MainNavigator from "@/components/main-navbar";
 
 // Fake API
 async function sendContactData(contactDetails) {
-  const response = await fetch("localhost:5001/api/contacts", {
+  const response = await fetch("http://localhost:5001/api/contacts", {
     method: "POST",
     body: JSON.stringify(contactDetails),
     headers: {
