@@ -1,16 +1,17 @@
-import { signIn } from "@/auth"
- 
+import { signIn } from "@/auth";
+
 export function SignIn() {
   return (
     <form
-      action={async (formData) => {
-        "use server"
-        await signIn("credentials", formData)
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        await signIn("credentials", formData);
       }}
     >
       <label>
-        Email
-        <input name="email" type="email" />
+        Username
+        <input name="username" type="text" />
       </label>
       <label>
         Password
@@ -18,5 +19,5 @@ export function SignIn() {
       </label>
       <button>Sign In</button>
     </form>
-  )
+  );
 }
