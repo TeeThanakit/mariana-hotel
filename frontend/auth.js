@@ -26,27 +26,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
+        let user = null;
+
+        // logic to salt and hash password
+        // const pwHash = saltAndHashPassword(credentials.password);
+
+
+        // Add logging to see exactly what is sent
+        console.log("Sending credentials:", credentials); 
+
         try {
-          console.log("Enter 1");
-          const foundUser = await StaffCredential.findOne({
-            username: credentials.username,
-          })
-            .lean()
-            .exec();
-
-          if (foundUser) {
-            console.log("User Exists");
-            const match = credentials.password == foundUser.password;
+          const response = await fetch("http://localhost:5001/api/login", {
+            method: "POST",
+            body: JSON.stringify(credentials),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message || "Authentication failed");
           }
-
-          if (match) {
-            console.log("Password matched");
-            return foundUser;
-          }
+          return data;
         } catch (error) {
-          console.log(error);
+          console.error("Authentication error:", error.message);
+          throw error;
         }
-        return null;
       },
     }),
   ],
