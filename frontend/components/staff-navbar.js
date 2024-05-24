@@ -26,7 +26,7 @@ export default async function StaffNav() {
           {session ? (
             <Link href="/api/auth/signout?callbackUrl=/employee">Logout</Link>
           ) : (
-            <Link href="/api/auth/signin">Login</Link>
+            <Link href="/api/auth/signin?callbackUrl=/employee">Login</Link>
           )}
         </div>
       </nav>
