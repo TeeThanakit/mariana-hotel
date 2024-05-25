@@ -36,6 +36,24 @@ app.post('/api/contacts', async (req, res) => {
   }
 });
 
+const contactviewSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  message: String
+}, { collection: 'contact_us' });
+
+const contactView = mongoose.model('contactView', contactviewSchema);
+
+app.get('/api/contactview', async (req, res) => {
+  try {
+    const contactViews = await contactView.find({});
+    res.json(contactViews);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 const roomTypeSchema = new mongoose.Schema({}, { collection: 'roomtypes' });
 
 const RoomType = mongoose.model('RoomType', roomTypeSchema);

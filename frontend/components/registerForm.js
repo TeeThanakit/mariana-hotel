@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Notification from "@/components/ui/notification";
 
 async function sendStaffData(staffDetails) {
-  const response = await fetch("/api/register-staff", {
+  const response = await fetch("http://localhost:5001/api/register-staff", {
     method: "POST",
     body: JSON.stringify(staffDetails),
     headers: {
@@ -170,9 +170,9 @@ export default function Register() {
               <div className="px-3">
                 <label>User Permission</label>
               </div>
-              <input type="radio" id="admin" value="admin" name="Permission" />
+              <input type="radio" id="CEO" value="CEO" name="Permission" />
               <label htmlFor="admin" className="pr-2">
-                Admin
+                CEO
               </label>
               <input type="radio" id="staff" value="staff" name="Permission" />
               <label htmlFor="staff" className="pr-2">

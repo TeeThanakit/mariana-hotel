@@ -156,7 +156,7 @@ export default function ContactForm() {
                 <FaEnvelope className="size-20" />
               </i>
               <h3>Email</h3>
-              <p>cpe36inter@kmutt.com</p>
+              <p>cpe35inter@kmutt.com</p>
             </div>
           </div>
         </div>
