@@ -64,7 +64,7 @@ export default function About() {
               roomType="deluxe"
             />
             <RoomCard
-              image="/images/studio.jpg"
+              image="/images/studios.jpg"
               title="Studio"
               description="Our Master size provides the ultimate in luxury and comfort."
               roomType="master-suite"
