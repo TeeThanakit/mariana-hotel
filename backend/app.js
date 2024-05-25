@@ -139,18 +139,22 @@ const RoomClean = mongoose.model('RoomClean', roomCleanSchema);
 
 app.get('/api/roomclean', async (req, res) => {
   try {
-    const roomCleans = await RoomClean.find({ clean: "NO" });
+    const roomCleans = await RoomClean.find({});
     res.json(roomCleans);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-app.put('/api/roomclean/:roomId', async (req, res) => {
-  const roomId = req.params.roomId;
+app.put('/api/roomclean/:room', async (req, res) => {
+  const room = req.params.room;
   const { clean } = req.body;
   try {
-    const updatedRoom = await RoomClean.findByIdAndUpdate(roomId, { clean }, { new: true });
+    const updatedRoom = await RoomClean.findOneAndUpdate(
+      { room: room },
+      { clean: clean },
+      { new: true }
+    );
     if (updatedRoom) {
       res.status(200).json(updatedRoom);
     } else {
@@ -160,6 +164,7 @@ app.put('/api/roomclean/:roomId', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 const userSchema = new mongoose.Schema({
   username: String,
