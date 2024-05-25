@@ -5,21 +5,21 @@ import Credentials from "next-auth/providers/credentials";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    Google({
-      profile(profile) {
-        console.log("Profile of Google ", profile);
+    // Google({
+    //   profile(profile) {
+    //     console.log("Profile of Google ", profile);
 
-        let userRole = "Google User";
+    //     let userRole = "Google User";
 
-        return {
-          ...profile,
-          id: profile.sub,
-          role: userRole,
-        };
-      },
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_Secret,
-    }),
+    //     return {
+    //       ...profile,
+    //       id: profile.sub,
+    //       role: userRole,
+    //     };
+    //   },
+    //   clientId: process.env.GOOGLE_ID,
+    //   clientSecret: process.env.GOOGLE_Secret,
+    // }),
     Credentials({
       credentials: {
         username: {},
