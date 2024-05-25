@@ -52,21 +52,21 @@ export default function About() {
         <div className="mx-auto max-w-6xl py-14">
           <div className="flex flex-wrap justify-center items-stretch mb-14">
             <RoomCard
-              image="/images/deluxe2000.jpg"
-              title="Basic Room"
+              image="/images/single_bedded_room.jpg"
+              title="Single Bedded Room"
               description="Our Basic Room offers a comfortable and affordable stay with all the essential amenities."
               roomType="basic"
             />
             <RoomCard
-              image="/images/deluxe2500.jpg"
-              title="Deluxe Room"
-              description="The Deluxe Room offers stunning views of the coastline and luxurious amenities to ensure a comfortable and memorable stay."
+              image="/images/suite.jpg"
+              title="Suite Room"
+              description="The Suite offers stunning views of the coastline and luxurious amenities to ensure a comfortable and memorable stay."
               roomType="deluxe"
             />
             <RoomCard
-              image="/images/studio4000.jpg"
-              title="Master Suite"
-              description="Our Master Suite provides the ultimate in luxury and comfort."
+              image="/images/studio.jpg"
+              title="Studio"
+              description="Our Master size provides the ultimate in luxury and comfort."
               roomType="master-suite"
             />
           </div>

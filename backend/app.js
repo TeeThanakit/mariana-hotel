@@ -21,7 +21,7 @@ const contactSchema = new mongoose.Schema({
   name: String,
   email: String,
   message: String,
-}, { collection: 'contact_us' });
+}, { collection: 'contact_us', versionKey: false });
 
 const Contact = mongoose.model('Contact', contactSchema);
 
@@ -40,7 +40,7 @@ const contactviewSchema = new mongoose.Schema({
   name: String,
   email: String,
   message: String
-}, { collection: 'contact_us' });
+}, { collection: 'contact_us', versionKey: false });
 
 const contactView = mongoose.model('contactView', contactviewSchema);
 
@@ -54,7 +54,7 @@ app.get('/api/contactview', async (req, res) => {
 });
 
 
-const roomTypeSchema = new mongoose.Schema({}, { collection: 'roomtypes' });
+const roomTypeSchema = new mongoose.Schema({}, { collection: 'roomtypes', versionKey: false });
 
 const RoomType = mongoose.model('RoomType', roomTypeSchema);
 
@@ -72,7 +72,7 @@ const bookingSchema = new mongoose.Schema({
   "check-in_date": Date,
   "check-out_date": Date,
   customerID: String,
-}, { collection: 'booking' });
+}, { collection: 'booking', versionKey: false });
 
 const roomSchema = new mongoose.Schema({
   room: String,
@@ -82,7 +82,7 @@ const roomSchema = new mongoose.Schema({
   children: String,
   image: String,
   clean: String,
-}, { collection: 'roomtypes' });
+}, { collection: 'roomtypes', versionKey: false });
 
 const Booking = mongoose.model('Booking', bookingSchema);
 const Room = mongoose.model('Room', roomSchema);
@@ -151,7 +151,7 @@ app.post('/check-availability', async (req, res) => {
 const roomCleanSchema = new mongoose.Schema({
   clean: String,
   room: String
-}, { collection: 'roomtypes' });
+}, { collection: 'roomtypes', versionKey: false });
 
 const RoomClean = mongoose.model('RoomClean', roomCleanSchema);
 
@@ -189,7 +189,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   role: String,
   staffid: String
-}, { collection: 'credential' });
+}, { collection: 'credential', versionKey: false });
 
 const User = mongoose.model('User', userSchema);
 
@@ -212,7 +212,7 @@ const credentialSchema = new mongoose.Schema({
   password: String,
   role: String,
   staffID: String,
-}, { collection: 'credential' });
+}, { collection: 'credential', versionKey: false });
 
 const staffSchema = new mongoose.Schema({
   staffID: String,
@@ -220,7 +220,7 @@ const staffSchema = new mongoose.Schema({
   lastName: String,
   email: String,
   tel: String,
-}, { collection: 'staff' });
+}, { collection: 'staff', versionKey: false });
 
 const Credential = mongoose.model('Credential', credentialSchema);
 const Staff = mongoose.model('Staff', staffSchema);
@@ -264,6 +264,7 @@ app.post('/api/register-staff', async (req, res) => {
   }
 });
 
+<<<<<<< Updated upstream
 // get payment
 const paymentSchema = new mongoose.Schema({
   name: String,
@@ -284,6 +285,124 @@ app.get('/api/paymentview', async(req,res) =>{
 })
 
 
+=======
+// Define schema for financial data
+const financialSchema = new mongoose.Schema({
+  date: Date,
+  revenue: Number,
+  expenses: Number,
+  profit: Number,
+}, { versionKey: false });
+
+// Create a model for financial data
+const Financial = mongoose.model('Financial', financialSchema);
+
+// Route to fetch financial data
+app.get('/api/financial', async (req, res) => {
+  try {
+    const financialData = await Financial.find();
+    res.json(financialData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+app.get('/api/bookings', async (req, res) => {
+  try {
+    const bookings = await Booking.find();
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/rooms', async (req, res) => {
+  try {
+    const rooms = await Room.find();
+    res.json(rooms);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+const customerSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  phone: String,
+  customerID: String
+}, { collection: 'customer', versionKey: false });
+
+const paymentSchema = new mongoose.Schema({
+  roomPrice: Number,
+  name: String,
+  paymentType: String,
+  timestamp: { type: Date, default: Date.now },
+  paymentID: String,
+}, { collection: 'payment', versionKey: false });
+
+const bookTestSchema = new mongoose.Schema({
+  "check-in_date": Date,
+  "check-out_date": Date,
+  room: String,
+  paymentID: String,
+  customerID: String,
+}, { collection: 'booking', versionKey: false });
+
+const Customer = mongoose.model('Customer', customerSchema);
+const Payment = mongoose.model('Payment', paymentSchema);
+const BookTest = mongoose.model('BookTest', bookTestSchema);
+
+const generateRandomID = (length) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
+app.post('/api/bookings', async (req, res) => {
+  const { name, email, phone, paymentType, roomId, checkInDate, checkOutDate, room, roomType, roomPrice } = req.body;
+
+  const customerID = phone;
+  const paymentID = generateRandomID(12);
+
+  const customer = new Customer({
+    name,
+    email,
+    phone,
+    customerID
+  });
+
+  const payment = new Payment({
+    roomPrice,
+    name,
+    paymentType,
+    paymentID
+  });
+
+  const booking = new BookTest({
+    "check-in_date": new Date(checkInDate),
+    "check-out_date": new Date(checkOutDate),
+    room,
+    paymentID,
+    customerID
+  });
+
+  try {
+    await customer.save();
+    await payment.save();
+    await booking.save();
+    res.status(201).json({ message: 'Booking confirmed and data saved successfully' });
+  } catch (error) {
+    console.error('Error saving booking data:', error);
+    res.status(500).json({ message: 'Error saving booking data' });
+  }
+});
+
+>>>>>>> Stashed changes
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
