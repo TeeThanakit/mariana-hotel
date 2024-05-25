@@ -22,8 +22,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     // }),
     Credentials({
       credentials: {
-        username: {},
-        password: {},
+        username: { type: "text" },
+        password: { type: "password" },
       },
       authorize: async (credentials) => {
         let user = null;
