@@ -1,21 +1,22 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import MainNavigator from "@/components/main-navbar";
-import { Main } from "next/document";
 
 export default function BookingPage() {
   const [checkInDate, setCheckInDate] = useState("");
   const [checkOutDate, setCheckOutDate] = useState("");
   const [numAdults, setNumAdults] = useState(1);
   const [numChildren, setNumChildren] = useState(0);
-  const [availability, setAvailability] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   function handleSubmit(event) {
     event.preventDefault();
+    setLoading(true);
+    setError(null);
 
     const bookingData = {
       checkInDate,
@@ -33,17 +34,19 @@ export default function BookingPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setAvailability(data);
+        setLoading(false);
         if (data.available) {
-          // Save the available rooms to local storage or state management
           localStorage.setItem("availableRooms", JSON.stringify(data.rooms));
-          // Redirect to the /available page
+          localStorage.setItem("checkInDate", checkInDate);
+          localStorage.setItem("checkOutDate", checkOutDate);
           router.push("/available");
         } else {
-          alert("No rooms available for the selected dates.");
+          setError("No rooms available for the selected dates.");
         }
       })
       .catch((error) => {
+        setLoading(false);
+        setError("An error occurred while checking availability.");
         console.error("Error:", error);
       });
   }
@@ -103,6 +106,7 @@ export default function BookingPage() {
               onChange={(e) => setNumAdults(e.target.value)}
               min={1}
               className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              required
             />
           </div>
           <div className="mb-4">
@@ -119,14 +123,17 @@ export default function BookingPage() {
               onChange={(e) => setNumChildren(e.target.value)}
               min={0}
               className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              required
             />
           </div>
           <button
             type="submit"
             className="bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 w-full text-center block"
+            disabled={loading}
           >
-            Check Availability
+            {loading ? "Checking..." : "Check Availability"}
           </button>
+          {error && <p className="mt-4 text-red-500">{error}</p>}
         </form>
       </section>
     </>
