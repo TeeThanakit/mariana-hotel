@@ -264,6 +264,26 @@ app.post('/api/register-staff', async (req, res) => {
   }
 });
 
+// get payment
+const paymentSchema = new mongoose.Schema({
+  name: String,
+  payment: String,
+  timestamp:Date,
+  total_price:String,
+  type: String
+}, { collection: 'payment' });
+const paymentView = mongoose.model('paymentView', paymentSchema);
+
+app.get('/api/paymentview', async(req,res) =>{
+  try{
+    const paymentViews = await paymentView.find({});
+    res.json(paymentViews);
+  } catch(error){
+    res.status(500).json({message: "cant fetch payment history"})
+  }
+})
+
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
