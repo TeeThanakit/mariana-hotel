@@ -264,28 +264,28 @@ app.post('/api/register-staff', async (req, res) => {
   }
 });
 
-<<<<<<< Updated upstream
+// <<<<<<< Updated upstream
 // get payment
-const paymentSchema = new mongoose.Schema({
-  name: String,
-  payment: String,
-  timestamp:Date,
-  total_price:String,
-  type: String
-}, { collection: 'payment' });
-const paymentView = mongoose.model('paymentView', paymentSchema);
+// const paymentSchema = new mongoose.Schema({
+//   name: String,
+//   payment: String,
+//   timestamp:Date,
+//   total_price:String,
+//   type: String
+// }, { collection: 'payment' });
+// const paymentView = mongoose.model('paymentView', paymentSchema);
 
-app.get('/api/paymentview', async(req,res) =>{
-  try{
-    const paymentViews = await paymentView.find({});
-    res.json(paymentViews);
-  } catch(error){
-    res.status(500).json({message: "cant fetch payment history"})
-  }
-})
+// app.get('/api/paymentview', async(req,res) =>{
+//   try{
+//     const paymentViews = await paymentView.find({});
+//     res.json(paymentViews);
+//   } catch(error){
+//     res.status(500).json({message: "cant fetch payment history"})
+//   }
+// })
 
 
-=======
+// =======
 // Define schema for financial data
 const financialSchema = new mongoose.Schema({
   date: Date,
@@ -402,7 +402,7 @@ app.post('/api/bookings', async (req, res) => {
   }
 });
 
->>>>>>> Stashed changes
+// >>>>>>> Stashed changes
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
