@@ -10,7 +10,7 @@ export default function HomePage() {
           <h1 className="text-7xl uppercase">
             Escape the ordinary indulge in the extraordinary
           </h1>
-          <p className="pt-3 text-2xl">Welcome to your oasis of luxury at</p>
+          <p className="pt-3 text-2xl">Welcome to your oasis of luxury at Mariana</p>
         </div>
       </div>
     </>
