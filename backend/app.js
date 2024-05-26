@@ -234,19 +234,43 @@ const Role = mongoose.model('Role', roleSchema);
 // Route to fetch staff information
 app.get('/api/staff', async (req, res) => {
   try {
-    const staff = await Staff.find();
-    const staffWithRole = await Promise.all(staff.map(async (staffMember) => {
-      const role = await Role.findOne({ staffId: staffMember.role });
-      return {
-        ...staffMember.toObject(),
-        role: role ? role.role : 'Unknown' // Assign role name or default to 'Unknown' if not found
-      };
-    }));
-    res.json(staffWithRole);
+    // Use aggregation to join staff and credentials collections
+    const staffWithRoles = await Staff.aggregate([
+      {
+        $lookup: {
+          from: 'credential',
+          localField: 'staffID',
+          foreignField: 'staffID',
+          as: 'credentials'
+        }
+      },
+      {
+        $unwind: {
+          path: '$credentials',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $project: {
+          staffID: 1,
+          name: 1,
+          lastName: 1,
+          email: 1,
+          tel: 1,
+          role: { $ifNull: ['$credentials.role', 'Unknown'] },
+          username: '$credentials.username'
+        }
+      }
+    ]);
+
+    res.json(staffWithRoles);
   } catch (error) {
+    console.error('Error fetching staff:', error);
     res.status(500).json({ message: error.message });
   }
 });
+
+
 
 // Add a new endpoint for staff registration
 app.post('/api/register-staff', async (req, res) => {
