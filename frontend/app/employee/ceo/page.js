@@ -3,8 +3,8 @@ import Link from "next/link";
 export default function CeoPage() {
   return (
     <div>
-      CEO only
-      <div className="flex gap-3">
+      <h1 className="text-center m-4 text-2xl">CEO area</h1>
+      <div className="flex gap-3 justify-center">
         <Link href="/employee/ceo/register" className="bg-red-500">
           Register Staff
         </Link>
@@ -13,6 +13,9 @@ export default function CeoPage() {
         </Link>
         <Link href="/employee/ceo/stafflist" className="bg-red-500">
           Staff List
+        </Link>
+        <Link href="/employee/ceo/addroom" className="bg-red-500">
+          Add Room
         </Link>
       </div>
     </div>
