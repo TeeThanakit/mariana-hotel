@@ -42,6 +42,7 @@ function StaffList() {
                 <th className="py-2 px-4 border-b">Email</th>
                 <th className="py-2 px-4 border-b">Phone</th>
                 <th className="py-2 px-4 border-b">Username</th>
+                <th className="py-2 px-4 border-b">Operation</th>
               </tr>
             </thead>
             <tbody>
@@ -55,6 +56,11 @@ function StaffList() {
                   <td className="py-2 px-4 border-b">{staff.email}</td>
                   <td className="py-2 px-4 border-b">{staff.tel}</td>
                   <td className="py-2 px-4 border-b">{staff.username}</td>
+                  <td className="flex gap-4">
+                    {/* Dummy button no actions */}
+                    <button className="text-green-400">Edit</button>
+                    <button className="text-red-500">Delete</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
