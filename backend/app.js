@@ -120,7 +120,7 @@ app.post('/check-availability', async (req, res) => {
           { "check-in_date": { $lt: checkOut }, "check-out_date": { $gt: checkIn } }
         ]
       });
-      console.log(`Existing bookings for room ${room.room}:`, existingBookings);
+      //console.log(`Existing bookings for room ${room.room}:`, existingBookings);
 
       const overlappingBooking = existingBookings.find(existingBooking => {
         const existingCheckIn = new Date(existingBooking["check-in_date"]);
@@ -130,7 +130,7 @@ app.post('/check-availability', async (req, res) => {
         return !(checkIn >= existingCheckOut || checkOut <= existingCheckIn);
       });
 
-      console.log(`Room ${room.room} overlapping booking:`, overlappingBooking);
+      //console.log(`Room ${room.room} overlapping booking:`, overlappingBooking);
       return overlappingBooking ? null : room;
     });
 
