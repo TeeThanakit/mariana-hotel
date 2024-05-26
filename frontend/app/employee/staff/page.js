@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from 'react'
-import { RoleStaffNav } from "@/components/staff-role-nav"
+import { useState, useEffect } from "react";
+import { RoleStaffNav } from "@/components/staff-role-nav";
 
 async function getBookedRoom() {
   try {
@@ -8,93 +8,102 @@ async function getBookedRoom() {
       next: {
         revalidate: 1,
       },
-    })
-    const jsonData = await response.json()
+    });
+    const jsonData = await response.json();
     if (response.ok) {
-      return jsonData
+      return jsonData;
     } else {
-      throw new Error("Failed to fetch data: " + jsonData.message)
+      throw new Error("Failed to fetch data: " + jsonData.message);
     }
   } catch (error) {
-    console.error("Error:", error)
-    alert("Error fetching data: " + error.message)
+    console.error("Error:", error);
+    alert("Error fetching data: " + error.message);
   }
 }
 
 function formatDate(date) {
   const options = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }
-  return new Date(date).toLocaleString(undefined, options)
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+  return new Date(date).toLocaleString(undefined, options);
 }
 
 export default function Staff() {
-  const [data, setData] = useState([])
-  const [filteredData, setFilteredData] = useState([])
-  const [error, setError] = useState(null)
-  const [search, setSearch] = useState("")
-  const [filter, setFilter] = useState("recent")
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("recent");
 
   useEffect(() => {
     async function fetchData() {
-      const bookedRoomData = await getBookedRoom()
+      const bookedRoomData = await getBookedRoom();
       if (bookedRoomData.error) {
-        setError(bookedRoomData.error)
+        setError(bookedRoomData.error);
       } else {
-        const sortedData = bookedRoomData.sort((a, b) => new Date(a['check-in_date']) - new Date(b['check-in_date']))
-        setData(sortedData)
-        filterData(sortedData, filter)
+        const sortedData = bookedRoomData.sort(
+          (a, b) => new Date(a["check-in_date"]) - new Date(b["check-in_date"])
+        );
+        setData(sortedData);
+        filterData(sortedData, filter);
       }
     }
-    fetchData()
-  }, [filter])
+    fetchData();
+  }, [filter]);
 
   const handleSearchChange = (e) => {
-    setSearch(e.target.value)
-  }
+    setSearch(e.target.value);
+  };
 
   const filterData = (data, filter) => {
     if (filter === "recent") {
-      const now = new Date()
-      const filtered = data.filter(item => new Date(item['check-out_date']) >= now)
-      setFilteredData(filtered)
+      const now = new Date();
+      const filtered = data.filter(
+        (item) => new Date(item["check-out_date"]) >= now
+      );
+      setFilteredData(filtered);
     } else {
-      setFilteredData(data)
+      setFilteredData(data);
     }
-  }
+  };
 
   useEffect(() => {
-    filterData(data, filter)
-  }, [data, filter])
+    filterData(data, filter);
+  }, [data, filter]);
 
   const handleFilterChange = (filter) => {
-    setFilter(filter)
-  }
+    setFilter(filter);
+  };
 
-  const displayedData = filteredData.filter(item =>
-    item.room.toLowerCase().includes(search.toLowerCase()) ||
-    formatDate(item['check-in_date']).toLowerCase().includes(search.toLowerCase()) ||
-    formatDate(item['check-out_date']).toLowerCase().includes(search.toLowerCase()) ||
-    item.paymentID.toLowerCase().includes(search.toLowerCase()) ||
-    item.customerID.toLowerCase().includes(search.toLowerCase())
-  )
+  const displayedData = filteredData.filter(
+    (item) =>
+      item.room.toLowerCase().includes(search.toLowerCase()) ||
+      formatDate(item["check-in_date"])
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      formatDate(item["check-out_date"])
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      item.paymentID.toLowerCase().includes(search.toLowerCase()) ||
+      item.customerID.toLowerCase().includes(search.toLowerCase())
+  );
 
   if (error) {
-    return <div className="container mx-auto p-4 text-red-500">{error}</div>
+    return <div className="container mx-auto p-4 text-red-500">{error}</div>;
   }
 
-  const style = "py-2 px-4 text-left text-sm font-medium text-gray-700"
-  const style1 = "py-2 px-4 text-sm text-gray-700"
+  const style = "py-2 px-4 text-left text-sm font-medium text-gray-700";
+  const style1 = "py-2 px-4 text-sm text-gray-700";
 
   return (
     <div>
       <div className="mt-5">
-        <RoleStaffNav />
+        <RoleStaffNav current="staff"/>
       </div>
       <div className="container mx-auto p-4">
         <div className="flex items-center justify-between mb-6">
@@ -102,13 +111,21 @@ export default function Staff() {
           <div className="flex space-x-4">
             <button
               onClick={() => handleFilterChange("recent")}
-              className={`text-sm font-medium ${filter === "recent" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-700"}`}
+              className={`text-sm font-medium ${
+                filter === "recent"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-700"
+              }`}
             >
               Recent
             </button>
             <button
               onClick={() => handleFilterChange("all")}
-              className={`text-sm font-medium ${filter === "all" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-700"}`}
+              className={`text-sm font-medium ${
+                filter === "all"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-700"
+              }`}
             >
               All Booking
             </button>
@@ -134,10 +151,17 @@ export default function Staff() {
             </thead>
             <tbody>
               {displayedData.map((item, index) => (
-                <tr key={item._id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <tr
+                  key={item._id}
+                  className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                >
                   <td className={style1}>{item.room}</td>
-                  <td className={style1}>{formatDate(item['check-in_date'])}</td>
-                  <td className={style1}>{formatDate(item['check-out_date'])}</td>
+                  <td className={style1}>
+                    {formatDate(item["check-in_date"])}
+                  </td>
+                  <td className={style1}>
+                    {formatDate(item["check-out_date"])}
+                  </td>
                   <td className={style1}>{item.paymentID}</td>
                   <td className={style1}>{item.customerID}</td>
                 </tr>
@@ -147,5 +171,5 @@ export default function Staff() {
         </div>
       </div>
     </div>
-  )
+  );
 }

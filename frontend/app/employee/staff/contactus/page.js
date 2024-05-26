@@ -1,4 +1,5 @@
 import AllPosts from "@/components/contactposts/all-posts";
+import { RoleStaffNav } from "@/components/staff-role-nav";
 
 async function getContactData() {
   try {
@@ -23,6 +24,9 @@ export default async function ContactUsDetail(props) {
   const data = await getContactData();
   return (
     <div>
+      <div className="mt-5">
+        <RoleStaffNav current="contact" />
+      </div>
       <AllPosts contact={data} />
     </div>
   );
