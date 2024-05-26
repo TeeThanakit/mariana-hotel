@@ -17,6 +17,9 @@ export default function CeoPage() {
         <Link href="/employee/ceo/addroom" className="bg-red-500">
           Add Room
         </Link>
+        <Link href="/employee/ceo/analytic" className="bg-red-500">
+          Analytic
+        </Link>
       </div>
     </div>
   );
