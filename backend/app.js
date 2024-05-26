@@ -361,15 +361,13 @@ app.post('/api/bookings', async (req, res) => {
     paymentID
   });
 
-const booking = new BookTest({
-  "check-in_date": new Date(checkInDate),
-  "check-out_date": new Date(checkOutDate),
-  room,
-  paymentID,
-  customerID
-});
-
-const Payment = mongoose.model('Payment', paymentSchema);
+  const booking = new BookTest({
+    "check-in_date": new Date(checkInDate),
+    "check-out_date": new Date(checkOutDate),
+    room,
+    paymentID,
+    customerID
+  });
 
   try {
     await customer.save();
@@ -381,6 +379,8 @@ const Payment = mongoose.model('Payment', paymentSchema);
     res.status(500).json({ message: 'Error saving booking data' });
   }
 });
+
+//const Payment = mongoose.model('Payment', paymentSchema);
 
 const paymentviewSchema = new mongoose.Schema({
   roomPrice: Number,
