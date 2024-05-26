@@ -135,7 +135,7 @@ app.post('/check-availability', async (req, res) => {
     });
 
     const availableRoomsFiltered = (await Promise.all(availabilityPromises)).filter(room => room !== null);
-    console.log('Filtered available rooms:', availableRoomsFiltered);
+    //console.log('Filtered available rooms:', availableRoomsFiltered);
 
     if (availableRoomsFiltered.length > 0) {
       res.json({ available: true, rooms: availableRoomsFiltered });
@@ -395,7 +395,7 @@ const PaymentView = mongoose.model('PaymentView', paymentviewSchema);
 app.get('/api/paymentview', async (req, res) => {
   try {
     const paymentViews = await PaymentView.find({});
-    console.log("Sending payment data:", paymentViews);  // Log data being sent
+    //console.log("Sending payment data:", paymentViews);  // Log data being sent
     res.json(paymentViews);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -415,7 +415,7 @@ const BookingView = mongoose.model('BookingView', bookingviewSchema);
 app.get('/api/bookinfview', async (req, res) => {
   try {
     const bookingViews = await BookingView.find({});
-    console.log("Sending payment data:", bookingViews);  // Log data being sent
+    //console.log("Sending payment data:", bookingViews);  // Log data being sent
     res.json(bookingViews);
   } catch (error) {
     res.status(500).json({ message: error.message });
