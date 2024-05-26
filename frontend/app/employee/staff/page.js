@@ -35,8 +35,10 @@ function formatDate(date) {
 
 export default function Staff() {
   const [data, setData] = useState([])
+  const [filteredData, setFilteredData] = useState([])
   const [error, setError] = useState(null)
   const [search, setSearch] = useState("")
+  const [filter, setFilter] = useState("recent")
 
   useEffect(() => {
     async function fetchData() {
@@ -44,19 +46,37 @@ export default function Staff() {
       if (bookedRoomData.error) {
         setError(bookedRoomData.error)
       } else {
-        // Sort data by check-in time
         const sortedData = bookedRoomData.sort((a, b) => new Date(a['check-in_date']) - new Date(b['check-in_date']))
         setData(sortedData)
+        filterData(sortedData, filter)
       }
     }
     fetchData()
-  }, [])
+  }, [filter])
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value)
   }
 
-  const filteredData = data.filter(item =>
+  const filterData = (data, filter) => {
+    if (filter === "recent") {
+      const now = new Date()
+      const filtered = data.filter(item => new Date(item['check-out_date']) >= now)
+      setFilteredData(filtered)
+    } else {
+      setFilteredData(data)
+    }
+  }
+
+  useEffect(() => {
+    filterData(data, filter)
+  }, [data, filter])
+
+  const handleFilterChange = (filter) => {
+    setFilter(filter)
+  }
+
+  const displayedData = filteredData.filter(item =>
     item.room.toLowerCase().includes(search.toLowerCase()) ||
     formatDate(item['check-in_date']).toLowerCase().includes(search.toLowerCase()) ||
     formatDate(item['check-out_date']).toLowerCase().includes(search.toLowerCase()) ||
@@ -77,7 +97,23 @@ export default function Staff() {
         <RoleStaffNav />
       </div>
       <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-6">Booked Rooms</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">Booked Rooms</h1>
+          <div className="flex space-x-4">
+            <button
+              onClick={() => handleFilterChange("recent")}
+              className={`text-sm font-medium ${filter === "recent" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-700"}`}
+            >
+              Recent
+            </button>
+            <button
+              onClick={() => handleFilterChange("all")}
+              className={`text-sm font-medium ${filter === "all" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-700"}`}
+            >
+              All Booking
+            </button>
+          </div>
+        </div>
         <input
           type="text"
           placeholder="Search..."
@@ -97,7 +133,7 @@ export default function Staff() {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((item, index) => (
+              {displayedData.map((item, index) => (
                 <tr key={item._id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                   <td className={style1}>{item.room}</td>
                   <td className={style1}>{formatDate(item['check-in_date'])}</td>
