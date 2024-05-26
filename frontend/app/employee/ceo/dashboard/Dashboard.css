@@ -1,0 +1,54 @@
+.dashboard-container {
+    margin: 20px auto; /* Center the container horizontally */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%; /* Set a fixed width */
+    max-width: 800px; /* Limit the maximum width */
+  }
+  
+  .back-icon-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+  
+  .back-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  .date-picker-container {
+    margin-bottom: 20px;
+  }
+  
+  .financial-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .financial-table th,
+  .financial-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  .financial-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  .financial-table tfoot {
+    font-weight: bold;
+  }
+  
+  .financial-table tfoot td {
+    padding-top: 10px;
+  }
+  

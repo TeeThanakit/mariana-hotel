@@ -225,6 +225,29 @@ const staffSchema = new mongoose.Schema({
 const Credential = mongoose.model('Credential', credentialSchema);
 const Staff = mongoose.model('Staff', staffSchema);
 
+const roleSchema = new mongoose.Schema({
+  staffID: String,
+  role: String
+}, { collection: 'credential' }); // Adjust collection name as per your setup
+const Role = mongoose.model('Role', roleSchema);
+
+// Route to fetch staff information
+app.get('/api/staff', async (req, res) => {
+  try {
+    const staff = await Staff.find();
+    const staffWithRole = await Promise.all(staff.map(async (staffMember) => {
+      const role = await Role.findOne({ staffId: staffMember.role });
+      return {
+        ...staffMember.toObject(),
+        role: role ? role.role : 'Unknown' // Assign role name or default to 'Unknown' if not found
+      };
+    }));
+    res.json(staffWithRole);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Add a new endpoint for staff registration
 app.post('/api/register-staff', async (req, res) => {
   const { name, lastname, phoneNumber, email, username, password, permission } = req.body;
