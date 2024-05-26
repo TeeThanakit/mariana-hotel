@@ -1,64 +1,115 @@
-import { RoleStaffNav } from "@/components/staff-role-nav";
+"use client";
+import { useState, useEffect } from 'react'
+import { RoleStaffNav } from "@/components/staff-role-nav"
 
 async function getBookedRoom() {
   try {
-    const response = await fetch("http://localhost:5001/api/paymentview", {
+    const response = await fetch("http://localhost:5001/api/bookinfview", {
       next: {
         revalidate: 1,
       },
-    });
-    const jsonData = await response.json();
+    })
+    const jsonData = await response.json()
     if (response.ok) {
-      return jsonData;
+      return jsonData
     } else {
-      throw new Error("Failed to fetch data: " + jsonData.message);
+      throw new Error("Failed to fetch data: " + jsonData.message)
     }
   } catch (error) {
-    console.error("Error:", error);
-    alert("Error fetching data: " + error.message);
+    console.error("Error:", error)
+    alert("Error fetching data: " + error.message)
   }
 }
 
-export default async function Staff() {
-  // const data = await getBookedRoom();
-  const data = [
-    {
-      _id: "1",
-      room: "A101 dummy data",
-      check_in_date: "2021-10-10 dummy data",
-      Name: "John Doe dummy data",
-      Tel: "0812345678 dummy data",
-    },
-  ];
-  const style = "py-2 px-4 text-left text-sm font-medium text-gray-700";
-  const style1 = "py-2 px-4 text-sm text-gray-700";
+function formatDate(date) {
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }
+  return new Date(date).toLocaleString(undefined, options)
+}
+
+export default function Staff() {
+  const [data, setData] = useState([])
+  const [error, setError] = useState(null)
+  const [search, setSearch] = useState("")
+
+  useEffect(() => {
+    async function fetchData() {
+      const bookedRoomData = await getBookedRoom()
+      if (bookedRoomData.error) {
+        setError(bookedRoomData.error)
+      } else {
+        // Sort data by check-in time
+        const sortedData = bookedRoomData.sort((a, b) => new Date(a['check-in_date']) - new Date(b['check-in_date']))
+        setData(sortedData)
+      }
+    }
+    fetchData()
+  }, [])
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value)
+  }
+
+  const filteredData = data.filter(item =>
+    item.room.toLowerCase().includes(search.toLowerCase()) ||
+    formatDate(item['check-in_date']).toLowerCase().includes(search.toLowerCase()) ||
+    formatDate(item['check-out_date']).toLowerCase().includes(search.toLowerCase()) ||
+    item.paymentID.toLowerCase().includes(search.toLowerCase()) ||
+    item.customerID.toLowerCase().includes(search.toLowerCase())
+  )
+
+  if (error) {
+    return <div className="container mx-auto p-4 text-red-500">{error}</div>
+  }
+
+  const style = "py-2 px-4 text-left text-sm font-medium text-gray-700"
+  const style1 = "py-2 px-4 text-sm text-gray-700"
+
   return (
     <div>
       <div className="mt-5">
         <RoleStaffNav />
       </div>
       <div className="container mx-auto p-4">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-          <thead className="bg-gray-100 border-b border-gray-200">
-            <tr>
-              <th className={style}>Room</th>
-              <th className={style}>Checkin time</th>
-              <th className={style}>Name</th>
-              <th className={style}>tel:</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((data) => (
-              <tr key={data._id} className="border-b border-gray-200">
-                <td className={style1}>{data.room}</td>
-                <td className={style1}>{data.check_in_date}</td>
-                <td className={style1}>{data.Name}</td>
-                <td className={style1}>{data.Tel}</td>
+        <h1 className="text-3xl font-bold mb-6">Booked Rooms</h1>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={search}
+          onChange={handleSearchChange}
+          className="mb-4 p-2 border border-gray-300 rounded-md w-full"
+        />
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+            <thead className="bg-gray-100 border-b border-gray-200">
+              <tr>
+                <th className={style}>Room</th>
+                <th className={style}>Check-in Time</th>
+                <th className={style}>Check-out Time</th>
+                <th className={style}>Payment ID</th>
+                <th className={style}>Customer ID</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredData.map((item, index) => (
+                <tr key={item._id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                  <td className={style1}>{item.room}</td>
+                  <td className={style1}>{formatDate(item['check-in_date'])}</td>
+                  <td className={style1}>{formatDate(item['check-out_date'])}</td>
+                  <td className={style1}>{item.paymentID}</td>
+                  <td className={style1}>{item.customerID}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  );
+  )
 }

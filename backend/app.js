@@ -361,13 +361,15 @@ app.post('/api/bookings', async (req, res) => {
     paymentID
   });
 
-  const booking = new BookTest({
-    "check-in_date": new Date(checkInDate),
-    "check-out_date": new Date(checkOutDate),
-    room,
-    paymentID,
-    customerID
-  });
+const booking = new BookTest({
+  "check-in_date": new Date(checkInDate),
+  "check-out_date": new Date(checkOutDate),
+  room,
+  paymentID,
+  customerID
+});
+
+const Payment = mongoose.model('Payment', paymentSchema);
 
   try {
     await customer.save();
@@ -377,6 +379,46 @@ app.post('/api/bookings', async (req, res) => {
   } catch (error) {
     console.error('Error saving booking data:', error);
     res.status(500).json({ message: 'Error saving booking data' });
+  }
+});
+
+const paymentviewSchema = new mongoose.Schema({
+  roomPrice: Number,
+  name: String,
+  paymentType: String,
+  paymentID: String,
+  timestamp: { type: Date, default: Date.now }
+}, { collection: 'payment', versionKey: false });
+
+const PaymentView = mongoose.model('PaymentView', paymentviewSchema);
+
+app.get('/api/paymentview', async (req, res) => {
+  try {
+    const paymentViews = await PaymentView.find({});
+    console.log("Sending payment data:", paymentViews);  // Log data being sent
+    res.json(paymentViews);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+const bookingviewSchema = new mongoose.Schema({
+  "check-in_date": { type: Date, default: Date.now },
+  "check-out_date": { type: Date, default: Date.now },
+  room: String,
+  paymentID: String,
+  customerID: String,
+}, { collection: 'booking', versionKey: false });
+
+const BookingView = mongoose.model('BookingView', bookingviewSchema);
+
+app.get('/api/bookinfview', async (req, res) => {
+  try {
+    const bookingViews = await BookingView.find({});
+    console.log("Sending payment data:", bookingViews);  // Log data being sent
+    res.json(bookingViews);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
