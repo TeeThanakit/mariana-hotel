@@ -7,7 +7,7 @@ export default async function StaffPage() {
   //   console.log("Print session", session);
   // }
   return (
-    <div>
+    <div className="text-center text-3xl mt-5">
       {!session ? (
         <h1>Here is a employee area, you gotta login first </h1>
       ) : (
