@@ -9,7 +9,11 @@ export default function ConfirmPage() {
   const [roomId, setRoomId] = useState(null);
   const [checkInDate, setCheckInDate] = useState("");
   const [checkOutDate, setCheckOutDate] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [days, setDays] = useState(0);
+  const [adjustedRoomPrice, setAdjustedRoomPrice] = useState(0);
   const [errors, setErrors] = useState({});
+  const [isHighSeason, setIsHighSeason] = useState(false);
 
   useEffect(() => {
     const queryRoomId = new URLSearchParams(window.location.search).get("roomId");
@@ -34,6 +38,38 @@ export default function ConfirmPage() {
     if (storedCheckOutDate) setCheckOutDate(storedCheckOutDate);
   }, [roomId]);
 
+  useEffect(() => {
+    if (room && checkInDate && checkOutDate) {
+      const numberOfDays = calculateNumberOfDays(checkInDate, checkOutDate);
+      let tempAdjustedRoomPrice = parseFloat(room.price);
+      let highSeason = false;
+
+      if (isDateInDecember(checkInDate) || isDateInDecember(checkOutDate)) {
+        tempAdjustedRoomPrice += 250;
+        highSeason = true;
+      }
+
+      const calculatedTotalPrice = numberOfDays * tempAdjustedRoomPrice;
+      setTotalPrice(calculatedTotalPrice);
+      setDays(numberOfDays);
+      setAdjustedRoomPrice(tempAdjustedRoomPrice);
+      setIsHighSeason(highSeason);
+    }
+  }, [room, checkInDate, checkOutDate]);
+
+  const calculateNumberOfDays = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const timeDiff = end - start;
+    const daysDiff = timeDiff / (1000 * 3600 * 24);
+    return Math.ceil(daysDiff);
+  };
+
+  const isDateInDecember = (date) => {
+    const month = new Date(date).getMonth();
+    return month === 11; // December is month 11 in JavaScript Date
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -47,7 +83,7 @@ export default function ConfirmPage() {
       checkOutDate,
       room: room.room,
       roomType: room.types,
-      roomPrice: room.price
+      roomPrice: totalPrice
     };
 
     const errors = {};
@@ -90,9 +126,15 @@ export default function ConfirmPage() {
           <div className="mb-8">
             <p className="text-lg">Room: {room.room}</p>
             <p className="text-lg">Room Type: {room.types}</p>
-            <p className="text-lg">Room Price: ${room.price}</p>
+            <p className={`text-lg ${isHighSeason ? "text-red-500" : ""}`}>
+              Room Price: ${parseFloat(room.price) + (isHighSeason ? 250 : 0)}
+              {isHighSeason && " (HIGH Season)"}
+            </p>
             <p className="text-lg">Check-in Date: {checkInDate}</p>
             <p className="text-lg">Check-out Date: {checkOutDate}</p>
+            <p className="text-lg font-semibold">
+              Total Price: ${totalPrice} ({days} days x ${adjustedRoomPrice})
+            </p>
           </div>
         ) : (
           <p className="text-lg">Loading room details...</p>
@@ -143,7 +185,7 @@ export default function ConfirmPage() {
               <option value="creditCard">Credit Card</option>
               <option value="debitCard">Debit Card</option>
               <option value="paypal">PayPal</option>
-              <option value="bankTransfer">BankTransfer</option>
+              <option value="bankTransfer">Bank Transfer</option>
             </select>
             {errors.paymentType && <p className="text-red-500">{errors.paymentType}</p>}
           </label>

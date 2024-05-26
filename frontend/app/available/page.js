@@ -35,7 +35,7 @@ export default function AvailableRoomsPage() {
                   <div className="p-6">
                     <h2 className="text-xl font-semibold mb-4">{room.room}</h2>
                     <p className="text-lg mb-2">Type: {room.types}</p>
-                    <p className="text-lg mb-2">Price: ${room.price}</p>
+                    <p className="text-lg mb-2">Price per day: ${room.price}</p>
                     <p className="text-lg mb-2">Capacity: {room.capacity}</p>
                     <p className="text-lg mb-2">Children: {room.children}</p>
                     <Link href={`/confrim?roomId=${room._id}`}>
